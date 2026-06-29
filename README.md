@@ -1,5 +1,7 @@
 # 🤖 ChatBot-IA : Intégration Backend Sécurisée
 
+ http://noah-vosgien-portfolio.duckdns.org:8080/
+
 ## 📌 Présentation du Projet
 Ce projet personnel a pour objectif de concevoir, déployer et sécuriser une architecture backend Node.js connectée à l'API Google Gemini (modèles Flash). Conçu pour simuler l'intégration d'un agent conversationnel au sein d'une plateforme e-commerce, ce laboratoire met l'accent sur les problématiques de production réelles : pertinence des réponses, étanchéité de l'infrastructure et sécurité des composants critiques (clés d'API, prompts d'origine et budgets de tokens).
 
