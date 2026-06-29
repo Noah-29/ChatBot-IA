@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breizh Vélos | Votre boutique cycliste</title>
+    <style>
+        /* --- STYLES DU SITE DE VÉLOS --- */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        header { background-color: #1b5e20; color: white; padding: 1.5rem; text-align: center; }
+        .hero { text-align: center; padding: 3rem 1rem; background: url('https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=1200&q=80') center/cover; color: white; }
+        .hero h2 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7); }
+        .products { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 2rem; }
+        .product-card { background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px; padding: 1.5rem; text-align: center; }
+        .product-card h3 { color: #1b5e20; }
+        .btn { display: inline-block; background: #ff9800; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; }
+
+        /* --- STYLES DU CHATBOT --- */
+        #chatbot-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; font-family: 'Segoe UI', sans-serif;}
+        #chat-button { background-color: #1b5e20; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        #chat-button:hover { transform: scale(1.1); }
+        #chat-window { display: none; width: 350px; height: 450px; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; position: absolute; bottom: 70px; right: 0; transform: scale(0); transform-origin: bottom right; transition: transform 0.3s ease; }
+        #chat-window.open { transform: scale(1); }
+        #chat-header { background-color: #1b5e20; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        #close-chat { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #f9f9f9; }
+        .message { max-width: 80%; padding: 10px 14px; border-radius: 15px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+        .bot-msg { background-color: #e0e0e0; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .user-msg { background-color: #1b5e20; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .bot-msg a { color: #1b5e20; font-weight: bold; }
+        #chat-input-area { display: flex; padding: 10px; border-top: 1px solid #ddd; background: white; }
+        #chat-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
+        #send-btn { background-color: #1b5e20; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; margin-left: 10px; cursor: pointer; }
+        .loading { font-style: italic; color: #888; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <!-- SITE DE VÉLOS -->
+    <header>
+        <h1>🚴‍♂️ Breizh Vélos</h1>
+        <p>L'excellence sur deux roues</p>
+    </header>
+
+    <div class="hero">
+        <h2>Prêt pour l'aventure ?</h2>
+        <p>Découvrez notre nouvelle collection de vélos adaptés à toutes vos envies.</p>
+    </div>
+
+    <div class="products">
+        <div class="product-card" id="vtt">
+            <h3>VTT (Aventure)</h3>
+            <p>Parfait pour les chemins de terre et la forêt. Suspension renforcée.</p>
+            <p><strong>À partir de 450€</strong></p>
+            <a href="#" class="btn">Voir les détails</a>
+        </div>
+        <div class="product-card" id="ville">
+            <h3>Vélo de Ville</h3>
+            <p>Léger, élégant, avec porte-bagages. Idéal pour vos trajets quotidiens.</p>
+            <p><strong>À partir de 300€</strong></p>
+            <a href="#" class="btn">Voir les détails</a>
+        </div>
+        <div class="product-card" id="electrique">
+            <h3>Vélo Électrique</h3>
+            <p>Franchissez les collines sans transpirer avec notre assistance intelligente.</p>
+            <p><strong>À partir de 1200€</strong></p>
+            <a href="#" class="btn">Voir les détails</a>
+        </div>
+    </div>
+
+    <!-- INTÉGRATION DU CHATBOT -->
+    <div id="chatbot-container">
+        <!-- Fenêtre de Chat -->
+        <div id="chat-window">
+            <div id="chat-header">
+                <span>🤖 Le Mécano (IA)</span>
+                <button id="close-chat">✖</button>
+            </div>
+            <div id="chat-messages">
+                <div class="message bot-msg">Bonjour ! Je suis Le Mécano, l'assistant virtuel de Breizh Vélos. Que puis-je faire pour vous ? 🚲</div>
+            </div>
+            <div id="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Posez votre question...">
+                <button id="send-btn">➤</button>
+            </div>
+        </div>
+        <!-- Bouton flottant -->
+        <button id="chat-button">💬</button>
+    </div>
+
+    <!-- SCRIPT DU CHATBOT -->
+    <script>
+        const chatButton = document.getElementById('chat-button');
+        const chatWindow = document.getElementById('chat-window');
+        const closeChat = document.getElementById('close-chat');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Ouvrir / Fermer le chat
+        chatButton.addEventListener('click', () => {
+            chatWindow.style.display = 'flex';
+            setTimeout(() => chatWindow.classList.add('open'), 10);
+            chatButton.style.display = 'none';
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatWindow.classList.remove('open');
+            setTimeout(() => {
+                chatWindow.style.display = 'none';
+                chatButton.style.display = 'block';
+            }, 300);
+        });
+
+        // Convertit les liens Markdown [Texte](url) en liens HTML cliquables
+        function parseMarkdown(text) {
+            let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Gras
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>'); // Liens
+            return html;
+        }
+
+        // Ajouter un message à l'interface
+        function appendMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+            msgDiv.classList.add(sender === 'user' ? 'user-msg' : 'bot-msg');
+            msgDiv.innerHTML = parseMarkdown(text);
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
+        }
+
+        // Envoyer le message au serveur (Ton code Express Node.js)
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Affiche le message de l'utilisateur
+            appendMessage(message, 'user');
+            chatInput.value = '';
+
+            // Affiche "Le Mécano écrit..."
+            const loadingDiv = document.createElement('div');
+            loadingDiv.classList.add('message', 'bot-msg', 'loading');
+            loadingDiv.innerText = "Le Mécano écrit...";
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+ try {
+                // APPEL À TON SERVEUR NGINX (qui relaie à Node.js)
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                
+                // Supprime le message de chargement
+                chatMessages.removeChild(loadingDiv);
+                
+                // Affiche la réponse de Gemini
+                if(data.reply) {
+                    appendMessage(data.reply, 'bot');
+                } else {
+                    appendMessage("Oups, mon guidon est coincé. (Erreur serveur)", 'bot');
+                }
+
+            } catch (error) {
+                console.error("Erreur de connexion:", error);
+                chatMessages.removeChild(loadingDiv);
+                appendMessage("Impossible de contacter le serveur. Assurez-vous que Node.js tourne.", 'bot');
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
